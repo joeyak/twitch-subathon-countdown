@@ -48,5 +48,30 @@ timeFunc = {
         }
         seconds = (seconds.length < 2) ? `0${seconds}` : seconds;
         return seconds;
+    },
+
+    getDiffClock(differenceTime) {
+        return `${this.getHours(differenceTime)}:${this.getMinutes(differenceTime)}:${this.getSeconds(differenceTime)}`
+    },
+
+    getDiffText(differenceTime) {
+        let text = "";
+
+        let hours = this.getHours(differenceTime).replace(/0*/, "");
+        if (hours !== "") {
+            text += `${hours}h `;
+        }
+
+        let minutes = this.getMinutes(differenceTime).replace(/0*/, "");
+        if (minutes !== "") {
+            text += `${minutes}m `;
+        }
+
+        let seconds = this.getSeconds(differenceTime).replace(/0*/, "")
+        if(seconds) {
+            text += `${seconds}s`
+        }
+
+        return text.trim();
     }
 };

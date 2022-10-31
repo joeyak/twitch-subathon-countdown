@@ -5,6 +5,11 @@ endingTime = timeFunc.addHours(endingTime, initialHours);
 endingTime = timeFunc.addMinutes(endingTime, initialMinutes);
 endingTime = timeFunc.addSeconds(endingTime, initialSeconds);
 
+let maxTime = new Date(Date.now());
+maxTime = timeFunc.addHours(maxTime, maxHours);
+maxTime = timeFunc.addMinutes(maxTime, maxMinutes);
+maxTime = timeFunc.addSeconds(maxTime, maxSeconds);
+
 let countdownEnded = false;
 let users = [];
 let time;
@@ -12,7 +17,7 @@ let time;
 const getNextTime = () => {
     let currentTime = new Date(Date.now());
     let differenceTime = endingTime - currentTime;
-    time = `${timeFunc.getHours(differenceTime)}:${timeFunc.getMinutes(differenceTime)}:${timeFunc.getSeconds(differenceTime)}`;
+    time = timeFunc.getDiffClock(differenceTime);
     if (differenceTime <= 0) {
         clearInterval(countdownUpdater);
         countdownEnded = true;
@@ -28,20 +33,29 @@ let countdownUpdater = setInterval(() => {
 
 
 const addTime = async (time, s) => {
-    endingTime = timeFunc.addSeconds(time, s);
-    let addedTime = document.createElement("p");
-    addedTime.classList = "addedTime";
-    addedTime.innerText = `+${s}s`;
-    document.body.appendChild(addedTime);
-    addedTime.style.display = "block";
-    await sleep(50);
-    addedTime.style.left = `${randomInRange(35, 65)}%`;
-    addedTime.style.top = `${randomInRange(15, 40)}%`;
-    addedTime.style.opacity = "1";
-    await sleep(2500);
-    addedTime.style.opacity = "0";
-    await sleep(500);
-    addedTime.remove();
+    if (endingTime < maxTime) {
+        endingTime = timeFunc.addSeconds(time, s);
+
+        let diffTime = timeFunc.addSeconds(new Date(0), s) - new Date(0);
+        if (endingTime > maxTime) {
+            diffTime = endingTime - maxTime;
+            endingTime = maxTime;
+        }
+
+        let addedTime = document.createElement("p");
+        addedTime.classList = "addedTime";
+        addedTime.innerText = `+${timeFunc.getDiffText(diffTime)}`;
+        document.body.appendChild(addedTime);
+        addedTime.style.display = "block";
+        await sleep(50);
+        addedTime.style.left = `${randomInRange(35, 65)}%`;
+        addedTime.style.top = `${randomInRange(15, 40)}%`;
+        addedTime.style.opacity = "1";
+        await sleep(2500);
+        addedTime.style.opacity = "0";
+        await sleep(500);
+        addedTime.remove();
+    }
 };
 
 
